@@ -1,4 +1,4 @@
-# @NovoCnpj – Validação de CNPJ Alfanumérico para Java (jackarta.validation)
+# @NovoCnpj v1.0.0-SNAPSHOT – Validação de CNPJ Alfanumérico para Java (jakarta.validation)
 
 Anotação customizada para validação de CNPJ no novo formato alfanumérico (IN RFB nº 2.229/2024), compatível com CNPJs numéricos legados.
 
@@ -20,11 +20,38 @@ A Receita Federal publicou a **IN RFB nº 2.229/2024** para expandir a capacidad
 - Aceita letras minúsculas (normaliza para maiúsculas).
 - Rejeita sequências uniformes (`00000000000000`, `AAAAAAAAAAAAAA`, etc.).
 - Compatível com CNPJs numéricos tradicionais.
-- Pronto para uso com **javax.validation** (Spring, Hibernate Validator, etc.).
+- Pronto para uso com **jakarta.validation** (Spring, Hibernate Validator, etc.).
 
 ---
 
 ## Instalação
+
+### Via GitHub Packages (Recomendado)
+
+Adicione o repositório e a dependência ao seu `pom.xml`:
+
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/eliaschacon/novocnpjvalidator</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>io.github.eliaschacon</groupId>
+        <artifactId>novo-cnpj-validator</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+```
+
+**Nota:** Substitua `1.0.0` pela versão desejada.
+
+---
+
+### Via cópia manual
 
 Copie as classes para o seu projeto:
 
@@ -55,8 +82,8 @@ NovoCnpjValidator
 ### 1. Anotar o campo no DTO
 
 ```java
-import ja.validation.constraints.NotNull;
-import br.com.seuprojeto.validation.NovoCnpj;
+import jakarta.validation.constraints.NotNull;
+import io.github.eliaschacon.validator.NovoCnpj;
 
 public class EmpresaDTO {
 
@@ -155,6 +182,7 @@ mvn test
 ## Licença
 
 Código livre. Adapte conforme necessário.
+[GNU General Public License](LICENSE)
 
 ---
 
