@@ -22,22 +22,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        run: mvn clean package -DskipTests
+        run: mvn clean package
 
       - name: Upload to GitHub Packages
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}"
-          POM_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "Uploading version: $POM_VERSION"
-          
-          curl -X PUT \
-            -u ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
-            -H "Content-Type: application/java-archive" \
-            --data-binary @target/novo-cnpj-validator-$POM_VERSION.jar \
-            "https://maven.pkg.github.com/eliaschacon/novocnpjvalidator/io/github/eliaschacon/novo-cnpj-validator/$POM_VERSION/novo-cnpj-validator-$POM_VERSION.jar"
-          
-          curl -X PUT \
-            -u ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
-            -H "Content-Type: application/xml" \
-            --data-binary @pom.xml \
-            "https://maven.pkg.github.com/eliaschacon/novocnpjvalidator/io/github/eliaschacon/novo-cnpj-validator/$POM_VERSION/novo-cnpj-validator-$POM_VERSION.pom"
+        run: mvn deploy -DskipTests
