@@ -26,3 +26,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/jacoco-report/jacoco.xml
+          directory: target/jacoco-report
+          flags: unittests
+          name: codecov-umbrella

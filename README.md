@@ -1,5 +1,7 @@
 # @NovoCnpj v1.0.0-SNAPSHOT – Validação de CNPJ Alfanumérico para Java (jakarta.validation)
 
+[![codecov](https://codecov.io/gh/elias-chacon/novo-cnpj-validator/graph/badge.svg?token=h5HdPC7cEk)](https://codecov.io/gh/elias-chacon/novo-cnpj-validator)
+
 Anotação customizada para validação de CNPJ no novo formato alfanumérico (IN RFB nº 2.229/2024), compatível com CNPJs numéricos legados.
 
 ---
