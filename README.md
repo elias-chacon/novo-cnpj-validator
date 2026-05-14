@@ -32,18 +32,18 @@ Adicione o repositório e a dependência ao seu `pom.xml`:
 
 ```xml
 <repositories>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/eliaschacon/novocnpjvalidator</url>
-    </repository>
+   <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/elias-chacon/novo-cnpj-validator</url>
+   </repository>
 </repositories>
 
 <dependencies>
-    <dependency>
-        <groupId>io.github.eliaschacon</groupId>
-        <artifactId>novo-cnpj-validator</artifactId>
-        <version>1.0.0</version>
-    </dependency>
+   <dependency>
+      <groupId>io.github.eliaschacon</groupId>
+      <artifactId>novo-cnpj-validator</artifactId>
+      <version>1.0.0</version>
+   </dependency>
 </dependencies>
 ```
 
