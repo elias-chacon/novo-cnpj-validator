@@ -26,6 +26,7 @@ jobs:
 
       - name: Upload to GitHub Packages
         run: |
+          echo "${{ secrets.GITHUB_TOKEN }}"
           POM_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Uploading version: $POM_VERSION"
           
