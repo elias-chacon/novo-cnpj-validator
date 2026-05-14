@@ -28,7 +28,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests
+        run: mvn publish -DskipTests -Dgpg.skip=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
