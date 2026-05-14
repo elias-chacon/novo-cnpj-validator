@@ -36,11 +36,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-publish-plugin</artifactId>
-                <version>3.2.1</version>
-            </plugin>
         </plugins>
     </build>
 
@@ -50,14 +45,5 @@
             <url>https://maven.pkg.github.com/eliaschacon/novocnpjvalidator</url>
         </repository>
     </distributionManagement>
-
-    <publishing>
-        <repositories>
-            <repository>
-                <id>github</id>
-                <url>https://maven.pkg.github.com/eliaschacon/novocnpjvalidator</url>
-            </repository>
-        </repositories>
-    </publishing>
 
 </project>
