@@ -1,68 +1,58 @@
-# @NovoCnpj v1.0.0-SNAPSHOT – Validação de CNPJ Alfanumérico para Java (jakarta.validation)
+# Novo CNPJ Validator
 
+[![CI](https://github.com/elias-chacon/novo-cnpj-validator/actions/workflows/ci.yml/badge.svg)](https://github.com/elias-chacon/novo-cnpj-validator/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/release/elias-chacon/novo-cnpj-validator?label=Version&sort=semver&style=flat-square)](https://github.com/elias-chacon/novo-cnpj-validator/releases/latest)
+[![Open issues](https://img.shields.io/github/issues/elias-chacon/novo-cnpj-validator?label=Open%20issues&style=flat-square)](https://github.com/elias-chacon/novo-cnpj-validator/issues)
+[![Last update](https://img.shields.io/github/last-commit/elias-chacon/novo-cnpj-validator?label=Updated&style=flat-square)](https://github.com/elias-chacon/novo-cnpj-validator/commits/main)
+[![License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
 [![codecov](https://codecov.io/gh/elias-chacon/novo-cnpj-validator/graph/badge.svg?token=h5HdPC7cEk)](https://codecov.io/gh/elias-chacon/novo-cnpj-validator)
 
-Anotação customizada para validação de CNPJ no novo formato alfanumérico (IN RFB nº 2.229/2024), compatível com CNPJs numéricos legados.
+**[Português](README.pt-BR.md)** | English
 
----
+A Jakarta Validation annotation for validating Brazilian CNPJ identifiers in both the traditional numeric format and the new alphanumeric format defined by **IN RFB No. 2.229/2024**.
 
-## Sobre o CNPJ Alfanumérico
+## About the alphanumeric CNPJ
 
-A Receita Federal publicou a **IN RFB nº 2.229/2024** para expandir a capacidade de registro de empresas. A partir de **julho de 2026**, novas inscrições poderão usar letras maiúsculas (A–Z) e números (0–9) nas posições 1 a 12. Os dois últimos dígitos continuam sendo **apenas numéricos** (0–9).
+The Brazilian Federal Revenue Service introduced alphanumeric CNPJ registrations to expand business registration capacity. Starting in **July 2026**, the first 12 positions may contain uppercase letters (`A-Z`) and digits (`0-9`). The final two check digits remain numeric.
 
-- CNPJs numéricos já existentes **não serão alterados**.
-- Formato: `XX.XXX.XXX/XXXX-DD` (14 caracteres alfanuméricos, máscara opcional).
-- Algoritmo de validação: módulo 11 com conversão de letras (`A`=17, `B`=18, …, `Z`=42).
+- Existing numeric CNPJs are unchanged.
+- Format: `XX.XXX.XXX/XXXX-DD` (14 alphanumeric characters; punctuation is optional).
+- Validation algorithm: modulo 11, with letters converted to ASCII value minus 48 (`A=17`, `B=18`, ..., `Z=42`).
 
----
+## Features
 
-## Funcionalidades
+- Accepts masked or unmasked strings.
+- Normalizes lowercase letters to uppercase.
+- Rejects uniform sequences such as `00000000000000` and `AAAAAAAAAAAAAA`.
+- Supports legacy numeric CNPJs and new alphanumeric CNPJs.
+- Works with **jakarta.validation** implementations such as Hibernate Validator and Spring Validation.
 
-- Valida strings com ou sem máscara (pontos, barras, hífens).
-- Aceita letras minúsculas (normaliza para maiúsculas).
-- Rejeita sequências uniformes (`00000000000000`, `AAAAAAAAAAAAAA`, etc.).
-- Compatível com CNPJs numéricos tradicionais.
-- Pronto para uso com **jakarta.validation** (Spring, Hibernate Validator, etc.).
+## Installation
 
----
+### GitHub Packages (recommended)
 
-## Instalação
-
-### Via GitHub Packages (Recomendado)
-
-Adicione o repositório e a dependência ao seu `pom.xml`:
+Add the GitHub Packages repository and dependency to `pom.xml`:
 
 ```xml
 <repositories>
-   <repository>
-      <id>github</id>
-      <url>https://maven.pkg.github.com/elias-chacon/novo-cnpj-validator</url>
-   </repository>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/elias-chacon/novo-cnpj-validator</url>
+    </repository>
 </repositories>
 
 <dependencies>
-   <dependency>
-      <groupId>io.github.eliaschacon</groupId>
-      <artifactId>novo-cnpj-validator</artifactId>
-      <version>1.0.0</version>
-   </dependency>
+    <dependency>
+        <groupId>io.github.eliaschacon</groupId>
+        <artifactId>novo-cnpj-validator</artifactId>
+        <version>1.0.1</version>
+    </dependency>
 </dependencies>
 ```
 
-**Nota:** Substitua `1.0.0` pela versão desejada.
+Replace `1.0.1` with the version you want to use.
 
----
-
-### Via cópia manual
-
-Copie as classes para o seu projeto:
-
-```
-NovoCnpj
-NovoCnpjValidator
-```
-
-### Dependências (Maven)
+### Maven dependencies
 
 ```xml
 <dependency>
@@ -71,77 +61,71 @@ NovoCnpjValidator
     <version>2.0.2</version>
 </dependency>
 <dependency>
-   <groupId>org.hibernate.validator</groupId>
-   <artifactId>hibernate-validator</artifactId>
-   <version>6.2.5.Final</version>
+    <groupId>org.hibernate.validator</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>6.2.5.Final</version>
 </dependency>
 ```
 
----
+## Usage
 
-## Como usar
-
-### 1. Anotar o campo no DTO
+### 1. Annotate a DTO field
 
 ```java
 import jakarta.validation.constraints.NotNull;
 import io.github.eliaschacon.validator.NovoCnpj;
 
-public class EmpresaDTO {
+public class CompanyDTO {
 
-    @NotNull(message = "CNPJ é obrigatório")
+    @NotNull(message = "CNPJ is required")
     @NovoCnpj
     private String cnpj;
 
-    // getters e setters
+    // getters and setters
 }
 ```
 
-### 2. Executar a validação
+### 2. Run validation
 
 ```java
 ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 Validator validator = factory.getValidator();
 
-Set<ConstraintViolation<EmpresaDTO>> violations = validator.validate(dto);
+Set<ConstraintViolation<CompanyDTO>> violations = validator.validate(dto);
 if (!violations.isEmpty()) {
-    // lida com erros
+    // handle validation errors
 }
 ```
 
----
+## Examples
 
-## Exemplos
+### Valid legacy numeric CNPJs
 
-### CNPJs válidos (numéricos legados)
+| Input with mask | Normalized |
+|-----------------|------------|
+| `00.000.000/0001-91` | `00000000000191` |
+| `04.252.011/0001-10` | `04252011000110` |
 
-| Entrada (com máscara) | Normalizado |
-|-----------------------|-------------|
-| `00.000.000/0001-91`  | `00000000000191` |
-| `04.252.011/0001-10`  | `04252011000110` |
+### Valid alphanumeric CNPJs
 
-### CNPJs válidos (alfanuméricos novos)
+| Input with mask | Normalized |
+|-----------------|------------|
+| `12.ABC.345/01AB-77` | `12ABC34501AB77` |
+| `12.abc.345/01ab-77` | `12ABC34501AB77` |
 
-| Entrada (com máscara) | Normalizado |
-|-----------------------|-------------|
-| `12.ABC.345/01AB-77`  | `12ABC34501AB77` |
-| `12.abc.345/01ab-77`  | `12ABC34501AB77` |
+### Invalid CNPJs
 
-### CNPJs inválidos
+| Input | Reason |
+|-------|--------|
+| `11.222.333/0001-10` | Incorrect check digits |
+| `12.ABC.345/01AB-36` | Incorrect second check digit |
+| `00000000000000` | Uniform sequence |
+| `12.ABC.345/01AB-7` | Incorrect length |
+| `123456789012` | Less than 14 characters |
 
-| Entrada | Motivo |
-|---------|--------|
-| `11.222.333/0001-10` | Dígitos verificadores errados (deveria ser 81) |
-| `12.ABC.345/01AB-36` | Segundo dígito incorreto |
-| `00000000000000` | Sequência uniforme |
-| `12.ABC.345/01AB-7` | Tamanho incorreto |
-| `123456789012` | Menos de 14 dígitos |
+## Tests
 
----
-
-## Testes
-
-A classe `NovoCnpjValidatorTest` contém testes parametrizados com **JUnit Jupiter**.
+The test suite uses JUnit Jupiter parameterized tests.
 
 ```java
 @ParameterizedTest
@@ -155,40 +139,43 @@ void testValidCnpj(String cnpj) {
 }
 ```
 
-Execute com:
+Run:
 
 ```bash
 mvn test
 ```
 
----
+## Validation algorithm
 
-## Algoritmo de validação
+1. **Cleaning:** remove everything except `[A-Za-z0-9]` and convert to uppercase.
+2. **Length:** require exactly 14 characters.
+3. **Uniform sequence:** reject when all 14 characters are identical.
+4. **First check digit:**
+   - Base: first 12 characters.
+   - Weights: `[5,4,3,2,9,8,7,6,5,4,3,2]`.
+   - Conversion: digits `0-9` become `0-9`; letters `A-Z` become `ASCII - 48`.
+   - Sum products and calculate `sum % 11`; remainders below 2 produce digit 0, otherwise `11 - remainder`.
+5. **Second check digit:**
+   - Base: first 12 characters plus the first check digit.
+   - Weights: `[6,5,4,3,2,9,8,7,6,5,4,3,2]`.
+   - Apply the same remainder rule.
+6. **Comparison:** compare both calculated check digits with the final two characters.
 
-1. **Limpeza**: remove tudo que não for `[A-Za-z0-9]` e converte para maiúsculas.
-2. **Tamanho**: deve ter exatamente 14 caracteres.
-3. **Sequência uniforme**: rejeita se todos os 14 caracteres forem iguais.
-4. **Cálculo do 1º dígito** (posição 13):
-   - Base: primeiros 12 caracteres.
-   - Pesos: `[5,4,3,2,9,8,7,6,5,4,3,2]`
-   - Conversão: `'0'-'9'` → `0-9`; `'A'-'Z'` → `ASCII - 48` (A=17, B=18, ...)
-   - Soma produtos → resto % 11. Se resto < 2 → dígito = 0; senão → dígito = 11 - resto.
-5. **Cálculo do 2º dígito** (posição 14):
-   - Base: primeiros 12 caracteres + 1º dígito.
-   - Pesos: `[6,5,4,3,2,9,8,7,6,5,4,3,2]`
-   - Mesma regra do resto.
-6. **Validação**: compara os dois dígitos calculados com os dois últimos caracteres.
+## Contributing
 
----
+Before submitting a change:
 
-## Licença
+```bash
+mvn clean verify
+```
 
-Código livre. Adapte conforme necessário.
-[GNU General Public License](LICENSE)
+Open issues and contributions are tracked in [GitHub Issues](https://github.com/elias-chacon/novo-cnpj-validator/issues). There are currently no open issues.
 
----
+## License
 
-## Referências
+Released under the [GNU General Public License](LICENSE).
 
-- [Instrução Normativa RFB nº 2.229/2024](https://www.in.gov.br/en/web/dou/-/instrucao-normativa-rfb-n-2.229-de-15-de-outubro-de-2024-586258831)
-- [Portal da Receita Federal – CNPJ Alfanumérico](https://www.gov.br/receitafederal/pt-br/assuntos/inscricoes/cnpj-alfanumerico)
+## References
+
+- [Normative Instruction RFB No. 2.229/2024](https://www.in.gov.br/en/web/dou/-/instrucao-normativa-rfb-n-2.229-de-15-de-outubro-de-2024-586258831)
+- [Brazilian Federal Revenue Service - Alphanumeric CNPJ](https://www.gov.br/receitafederal/pt-br/assuntos/inscricoes/cnpj-alfanumerico)
